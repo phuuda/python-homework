@@ -5,8 +5,7 @@ class Stack:
         self.arr = []
     
     def push(self, item): # кладет эл-т в конец очереди
-        self.arr.append(item)
-        return(self.arr)
+        self.arr.append(item) # no return needed
     
     def pop(self): # убрать из очереди новейший эл-т
         n = self.arr[-1]
@@ -29,7 +28,7 @@ class Queue:
 
     def enqueue(self, item): # add to stack1
         self.stack1.arr.append(item)
-        return(self.stack1.arr)
+        return(self.stack1.arr) # no return needed
             
     def dequeue(self):
         x = self.stack1.arr[0]
