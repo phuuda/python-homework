@@ -27,8 +27,7 @@ class Queue:
         self.stack2 = Stack()
 
     def enqueue(self, item): # add to stack1
-        self.stack1.arr.append(item)
-        return(self.stack1.arr) # no return needed
+        self.stack1.arr.append(item) # no return needed
             
     def dequeue(self):
         x = self.stack1.arr[0]
