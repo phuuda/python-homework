@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Анализ текста</title>
+    <style>
+        .pos {vertical-align: sub; color: blue; font-size: 70%;}
+        .result {font-size: 15px;}
+    </style>
+</head>
+<body>
+    <form method='post'>
+        <h1>Ваш текст:</h1>
+        <textarea rows="4" cols="50" name="text">{{ input }}</textarea>
+        <br>
+        <input type="submit" value="Разобрать">
+    </form>
+
+    {% if text %}
+        <h1>Разбор:</h1>
+        <p class="result"> {{ text | safe}}</p>
+    {% endif %}
+
+    {% if text %}
+        <h1>кол-во глаголов:</h1>
+        <p class="result"> {{ v_quantity | safe}}</p>
+    {% endif %}
+
+    {% if text %}
+        <h1>% глаголов:</h1>
+        <p class="result"> {{ v_percent | safe}}</p>
+    {% endif %}
+
+    {% if text %}
+        <h1>кол-во переходных глаголов:</h1>
+        <p class="result"> {{ t_verb_count | safe}}</p>
+    {% endif %}
+
+    {% if text %}
+        <h1>кол-во непереходных глаголов:</h1>
+        <p class="result"> {{ intrans_verb_count | safe}}</p>
+    {% endif %}                
+
+    {% if text %}
+        <h1>кол-во глаголов сов. вида:</h1>
+        <p class="result"> {{ sov_v_count | safe}}</p>
+    {% endif %}
+
+    {% if text %}
+        <h1>кол-во глаголов несов. вида:</h1>
+        <p class="result"> {{ nes_v_count | safe}}</p>
+    {% endif %}
+
+    {% if text %}
+        <h1>список глагольных лемм:</h1>
+        <p class="result"> {{ ordered_lexems | safe}}</p>
+    {% endif %}
+
+</body>
+</html>
