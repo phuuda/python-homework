@@ -1,3 +1,5 @@
+## LINK TO SITE: http://phuuda.pythonanywhere.com/
+
 from flask import Flask
 from flask import url_for, render_template, request, redirect
 from pymystem3 import Mystem
