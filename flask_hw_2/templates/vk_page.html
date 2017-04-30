@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Количество участников групп VK</title>
+    <style>
+        .pos {vertical-align: sub; color: blue; font-size: 70%;}
+        .result {font-size: 15px;}
+    </style>
+</head>
+<body>
+
+<p>
+    Сравнить количество участников 2 групп VK:
+</p>
+
+<form method="post">
+    <label>1st VK group id: <input type="text" name="group_one"> </label><br>
+    <label>2nd VK group id: <input type="text" name="group_two"> </label><br>
+    <input type="submit" value="Send">
+
+</form>
+
+    {% if group_one %}
+        <h1>Количество пользователей 1 группы:</h1>
+        <p class="result"> {{ group1 | safe}}</p>
+    {% endif %}
+
+    {% if group_two %}
+        <h1>Количество пользователей 2 группы:</h1>
+        <p class="result"> {{ group2 | safe}}</p>
+    {% endif %}
+
+</body>
+</html>
