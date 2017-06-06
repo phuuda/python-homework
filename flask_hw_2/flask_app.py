@@ -1,10 +1,23 @@
 ## LINK TO SITE: http://phuuda.pythonanywhere.com/
 
+import nltk
+from nltk import word_tokenize
+
+from nltk import regexp_tokenize
+import re
+import nltk.corpus  
+from nltk.text import Text 
+from nltk.stem.snowball import SnowballStemmer
+from nltk.collocations import *
+
+
 from flask import Flask
 from flask import url_for, render_template, request, redirect
 from pymystem3 import Mystem
 from collections import Counter
 import requests, operator, json
+
+my_corpus = nltk.corpus.PlaintextCorpusReader('static', '.*\.txt')
 
 m = Mystem()
 app = Flask(__name__)
@@ -60,6 +73,39 @@ def ordered_v_lexems(verbs):
         
     return(just_lex)
 
+
+def get_sent(text, my_corpus):
+    all_sent = my_corpus.sents()        # search exact word form
+    sent_res = []
+    for x in all_sent:
+        for n in x:
+            if text.lower == n.lower():
+                y = ' '.join(x)
+                sent_res.append(y)
+
+    stemmer = SnowballStemmer("english") # search sentences by stem of word
+    find_stem = stemmer.stem(text)
+    for x in all_sent:                  
+        for n in x:
+            if find_stem == stemmer.stem(n):
+                y = ' '.join(x)
+                if y not in sent_res:
+                    sent_res.append(y)
+
+    return sent_res
+
+def get_colloc(text, my_corpus):
+    bigram_measures = nltk.collocations.BigramAssocMeasures()
+    finder = BigramCollocationFinder.from_words(my_corpus.words())
+    finder.apply_freq_filter(2)
+    colloc_res = []
+
+    collocations = finder.nbest(bigram_measures.pmi, 30000)
+    for x in collocations:
+        if text == x[0].lower() or text == x[1].lower():
+            colloc_res.append(x)   
+
+    return colloc_res
 
 # enter 2 open group ids
 # return # of people in each group
@@ -131,6 +177,49 @@ def vk_api():
         return render_template('vk_page.html', group1=group1, group2=group2)
     
     return render_template('vk_page.html')    
+
+
+@app.route('/corpus', methods=['get', 'post'])
+def corpus():
+#    my_corpus = nltk.corpus.PlaintextCorpusReader('./sh_texts', '.*\.txt')
+    my_corpus = nltk.corpus.PlaintextCorpusReader('static', '.*\.txt')    
+    if request.form:
+        word = request.form['word']
+
+
+        all_sent = my_corpus.sents()        # search exact word form
+        sent_res = []
+        for x in all_sent:
+            for n in x:
+                if word.lower == n.lower():
+                    y = ' '.join(x)
+                    sent_res.append(y)
+
+        stemmer = SnowballStemmer("english") # search sentences by stem of word
+        find_stem = stemmer.stem(word)
+        for x in all_sent:                  
+            for n in x:
+                if find_stem == stemmer.stem(n):
+                    y = ' '.join(x)
+                    if y not in sent_res:
+                        sent_res.append(y)
+        sentences = sent_res
+
+        bigram_measures = nltk.collocations.BigramAssocMeasures()
+        finder = BigramCollocationFinder.from_words(my_corpus.words())
+        finder.apply_freq_filter(2)
+        colloc_res = []
+
+        collocations = finder.nbest(bigram_measures.pmi, 30000)
+        for x in collocations:
+            if word == x[0].lower() or word == x[1].lower():
+                colloc_res.append(x)
+
+        collocations = colloc_res
+        
+    
+        return render_template('corpus.html', input = word, sentences = sentences, collocations = collocations)
+    return render_template('corpus.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
