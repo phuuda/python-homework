@@ -9,7 +9,7 @@ import nltk.corpus
 from nltk.text import Text 
 from nltk.stem.snowball import SnowballStemmer
 from nltk.collocations import *
-
+#nltk.download('punkt')
 
 from flask import Flask
 from flask import url_for, render_template, request, redirect
@@ -181,11 +181,12 @@ def vk_api():
 
 @app.route('/corpus', methods=['get', 'post'])
 def corpus():
-#    my_corpus = nltk.corpus.PlaintextCorpusReader('./sh_texts', '.*\.txt')
-    my_corpus = nltk.corpus.PlaintextCorpusReader('static', '.*\.txt')    
     if request.form:
         word = request.form['word']
 
+        #resource_path = os.path.join(app.root_path, 'static')
+        r_path = 'mysite/static' # specific address for my pythonanywhere site
+        my_corpus = nltk.corpus.PlaintextCorpusReader(r_path, '.*\.txt')
 
         all_sent = my_corpus.sents()        # search exact word form
         sent_res = []
@@ -197,13 +198,16 @@ def corpus():
 
         stemmer = SnowballStemmer("english") # search sentences by stem of word
         find_stem = stemmer.stem(word)
-        for x in all_sent:                  
+        for x in all_sent:
             for n in x:
                 if find_stem == stemmer.stem(n):
                     y = ' '.join(x)
                     if y not in sent_res:
                         sent_res.append(y)
+
+        #sent_res = "\n".join(sent_res)
         sentences = sent_res
+        #sentences = sentences.replace(",", "<br />")
 
         bigram_measures = nltk.collocations.BigramAssocMeasures()
         finder = BigramCollocationFinder.from_words(my_corpus.words())
@@ -216,10 +220,12 @@ def corpus():
                 colloc_res.append(x)
 
         collocations = colloc_res
-        
-    
-        return render_template('corpus.html', input = word, sentences = sentences, collocations = collocations)
-    return render_template('corpus.html')
+
+
+        return render_template('corpus.html', input=word, word=word, sentences=sentences, collocations=collocations)
+    else:
+        return render_template('corpus.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
+    
